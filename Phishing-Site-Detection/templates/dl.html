@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Phishing Website Detection using Image</title>
+
+    <!-- CSS Styles -->
+    <style>
+        body {
+            color: #fff; /* White text color */
+            font-family: Arial, sans-serif;
+            margin: 0; /* Remove default margin */
+            padding: 0; /* Remove default padding */
+            background-image: url('/static/homebg88.jpeg');
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-size: 100% 100%;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center; /* Center content vertically and horizontally */
+            min-height: 100vh; /* Ensuring the container takes at least the viewport height */
+        }
+        .frame {
+            background-color: rgb(253, 253, 255,0.6); /* transparent background */
+            padding: 20px;
+            border-radius: 14px;
+            text-align: center;
+            max-width: 400px; /* Limit the width of the frame */
+        }
+        h1 {
+            color: #000000; /* White header text color */
+        }
+        form {
+            text-align: left; /* Align the form elements to the left */
+        }
+        .input-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px; /* Add vertical spacing between input and button */
+        }
+        input[type="file"] {
+            border: 1px solid #007BFF; /* Blue border for the file input */
+            background-color: #444; /* Dark background for the file input */
+            color: #fff; /* White text color for the file input */
+            padding: 10px;
+            border-radius: 5px;
+        }
+        button[type="button"] {
+            background-color: #0099ff ; /* Transparent button background */
+            color: #ffffff; 
+            border: 2px solid #007BFF; /* Blue border for the button */
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #prediction-result {
+            color: #ffff;
+            margin-top: 20px; 
+            text-align: center; 
+        }
+        /* Define the explosion animation */
+        @keyframes explode {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(2);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    
+    <!-- Page Content -->
+    <div class="container">
+        <div class="frame">
+            <h1>WebPage Image Analysis</h1>
+
+            <!-- Form for uploading an image and making a prediction -->
+            <form id="predict-form" enctype="multipart/form-data">
+                <div class="input-container">
+                    <input type="file" id="image-input" accept="image/*" required>
+                    <button type="button" onclick="predictImage()">Predict</button>
+                </div>
+            </form>
+
+             <!-- Display area for the prediction result -->
+            <div id="prediction-result"></div> <!-- Result will be displayed here -->
+        </div>
+    </div>
+
+    <!-- JavaScript code for handling image prediction -->
+    
+    <script>
+        function predictImage() {
+            // Get the selected image file
+            const imageInput = document.getElementById("image-input");
+            const imageFile = imageInput.files[0];
+
+            if (!imageFile) {
+                alert("Please select an image file.");
+                return;
+            }
+
+            // Create a FormData object to send the image file
+            const formData = new FormData();
+            formData.append("image", imageFile);
+
+            // Send a POST request to the server for prediction
+            fetch("/predict_image", {
+                method: "POST",
+                body: formData,
+            })
+            .then(response => response.text())
+            .then(result => {
+                // Display the prediction result in the result div
+                const predictionResultDiv = document.getElementById("prediction-result");
+                predictionResultDiv.innerText = result;
+            })
+            .catch(error => {
+                console.error(error);
+            });
+        }
+    </script>
+</body>
+</html>
